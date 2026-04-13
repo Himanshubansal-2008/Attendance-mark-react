@@ -3,11 +3,10 @@ import { useEffect, useState } from "react";
 function App() {
   const [name, setName] = useState("");
   const [search, setSearch] = useState("");
-  const [attendanceStatus, setAttendanceStatus] = useState(false);
   const [students, setStudents] = useState(() => {
-  const storedStudents = localStorage.getItem("students");
-  return storedStudents ? JSON.parse(storedStudents) : [];
-});
+    const storedStudents = localStorage.getItem("students");
+    return storedStudents ? JSON.parse(storedStudents) : [];
+  });
 
 
   useEffect(() => {
@@ -21,7 +20,7 @@ function App() {
 
   function handleStudent(e) {
     e.preventDefault();
-    setStudents([...students, { id: crypto.randomUUID(), name ,attendanceStatus: attendanceStatus}]);
+    setStudents([...students, { id: crypto.randomUUID(), name ,attendanceStatus: false }]);
     setName("");
   }
 
@@ -30,6 +29,15 @@ function App() {
       student.id === id ? { ...student, attendanceStatus: status } : student
     ));
   }
+
+
+
+  function handleReset() {
+    setStudents([]);
+  }
+
+
+
   return (
     <div>
       <h1>No. of Students: {students.length}</h1>
@@ -56,15 +64,17 @@ function App() {
             {searchedStudents.map((student) => (
               <li key={student.id}>
                 {student.name}
-                {student.attendanceStatus ? " (Present)" : " (Absent)"}
                 <button onClick={() => handleAttendance(student.id, true)}>P</button>
                 <button onClick={() => handleAttendance(student.id, false)}>A</button>
                 <button onClick={() => setStudents(students.filter((s) => s.id !== student.id))}>Remove</button>
+                <h1>{student.attendanceStatus ? " Present" : " Absent"}</h1>
+
                 
               </li>
             ))}
           </ul>
         </div>
+        <button onClick={handleReset}>Reset Data</button>
     </div>
   )
 
